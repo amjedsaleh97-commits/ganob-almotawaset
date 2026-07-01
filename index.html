@@ -106,6 +106,10 @@
         .nav-logo-text .brand-name { font-size: 0.9rem; font-weight: 700; color: var(--white); line-height: 1.3; }
         .nav-logo-text .brand-sub { font-size: 0.7rem; color: var(--accent); font-weight: 500; }
         .nav-links { display: flex; align-items: center; gap: 5px; list-style: none; }
+        @media (min-width: 1025px) {
+            .nav-links { flex: 1; justify-content: center; position: relative; }
+            .nav-links li:last-child { position: absolute; left: 0; }
+        }
         .nav-links a {
             color: rgba(255,255,255,0.8); text-decoration: none;
             font-size: 0.85rem; font-weight: 500; padding: 8px 14px;
@@ -131,6 +135,8 @@
             position: relative; min-height: 100vh;
             display: flex; align-items: center; justify-content: center;
             overflow: hidden;
+            padding-bottom: 120px;
+            padding-top: 80px;
         }
         .hero-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -570,10 +576,34 @@
             .footer-bottom { flex-direction: column; text-align: center; }
             .about-features { grid-template-columns: 1fr; }
             .contact-form-wrapper { padding: 25px; }
+            .cursor-dot, .cursor-outline { display: none; } /* Hide on mobile */
+        }
+
+        /* Custom Cursor Animation */
+        .cursor-dot, .cursor-outline {
+            position: fixed;
+            top: 0; left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999999;
+            pointer-events: none;
+        }
+        .cursor-dot {
+            width: 8px; height: 8px;
+            background-color: var(--accent);
+        }
+        .cursor-outline {
+            width: 40px; height: 40px;
+            border: 2px solid rgba(212, 168, 67, 0.5);
+            transition: width 0.3s ease, height 0.3s ease, background-color 0.3s ease;
         }
     </style>
 </head>
 <body>
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
     <!-- Loader -->
     <div class="loader" id="loader">
         <div>
@@ -586,7 +616,7 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="#home" class="nav-logo">
-                <img src="logo.png" alt="شعار مصنع جنوب المتوسط" style="height: 48px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5)); border-radius: 8px;">
+                <img src="logo.png" alt="شعار مصنع جنوب المتوسط" style="height: 75px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5)); border-radius: 8px;">
                 <div class="nav-logo-text">
                     <span class="brand-name">جنوب المتوسط</span>
                     <span class="brand-sub">STEEL INDUSTRIES</span>
@@ -1116,7 +1146,7 @@
             <div class="footer-grid">
                 <div class="footer-brand">
                     <div class="footer-logo">
-                        <img src="logo.png" alt="شعار مصنع جنوب المتوسط" style="height: 55px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5)); border-radius: 10px;">
+                        <img src="logo.png" alt="شعار مصنع جنوب المتوسط" style="height: 85px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5)); border-radius: 10px;">
                         <div class="footer-logo-text">مصنع جنوب المتوسط<br>للصناعات الحديدية</div>
                     </div>
                     <p>رواد الصناعات الحديدية في ليبيا، نقدم حلولاً عالية الجودة وفق أعلى معايير الدقة والمتانة.</p>
@@ -1183,7 +1213,7 @@
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.getElementById('loader').classList.add('hidden');
-            }, 800);
+            }, 100);
         });
 
         // Navbar scroll
@@ -1300,6 +1330,38 @@
             particle.style.animationDuration = (4 + Math.random() * 4) + 's';
             particlesContainer.appendChild(particle);
         }
+
+        // Custom Cursor Motion
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        
+        window.addEventListener('mousemove', function(e) {
+            const posX = e.clientX;
+            const posY = e.clientY;
+            
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+            
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        // Add hover effect to interactive elements
+        const hoverables = document.querySelectorAll('a, button, .faq-question, .gallery-item, .product-card, .service-card, .project-card, .why-card, .client-card');
+        hoverables.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorOutline.style.width = '60px';
+                cursorOutline.style.height = '60px';
+                cursorOutline.style.backgroundColor = 'rgba(212, 168, 67, 0.1)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorOutline.style.width = '40px';
+                cursorOutline.style.height = '40px';
+                cursorOutline.style.backgroundColor = 'transparent';
+            });
+        });
     </script>
 </body>
 </html>
